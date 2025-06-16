@@ -50,7 +50,6 @@
 
   
   <div class="container">
-    <h1>최신 콘텐츠</h1>
     <div id="content-list" class="list-group">불러오는 중...</div>
   </div>
 
@@ -127,7 +126,7 @@
         titleDiv.className = 'd-flex w-100 justify-content-between';
 
         const title = document.createElement('h5');
-        title.textContent = item.title
+        title.textContent = item.translated_title || item.title;
         title.className = 'mb-1';
 
         const date = document.createElement('small');
@@ -144,7 +143,7 @@
 
         const detail = document.createElement('small');
         detail.appendChild(badge);
-        detail.appendChild(document.createTextNode(item.summary))
+        detail.appendChild(document.createTextNode(item.translated_summary || item.summary))
         
 
         titleDiv.appendChild(title);
