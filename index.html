@@ -1,103 +1,166 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>GYLee</title>
+  <meta charset="UTF-8">
+  <title>기술 콘텐츠 리스트</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/locale/ko.min.js"></script>
+  
+  <style>
+    /*body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .card img {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .card-content {
+      flex: 1;
+    }
+    .card-title {
+      font-size: 18px;
+      margin: 0 0 8px 0;
+    }
+    .card-summary {
+      margin: 0 0 8px 0;
+    }
+    .card-link {
+      color: blue;
+      text-decoration: underline;
+    }*/
+  </style>
 </head>
 <body>
-<ul role="list" class="divide-y divide-gray-100">
-  <li class="flex justify-between gap-x-6 py-5">
-    <div class="flex min-w-0 gap-x-4">
-      <img class="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm/6 font-semibold text-gray-900">Leslie Alexander</p>
-        <p class="mt-1 truncate text-xs/5 text-gray-500">leslie.alexander@example.com</p>
-      </div>
-    </div>
-    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-      <p class="text-sm/6 text-gray-900">Co-Founder / CEO</p>
-      <p class="mt-1 text-xs/5 text-gray-500">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
-    </div>
-  </li>
-  <li class="flex justify-between gap-x-6 py-5">
-    <div class="flex min-w-0 gap-x-4">
-      <img class="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm/6 font-semibold text-gray-900">Michael Foster</p>
-        <p class="mt-1 truncate text-xs/5 text-gray-500">michael.foster@example.com</p>
-      </div>
-    </div>
-    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-      <p class="text-sm/6 text-gray-900">Co-Founder / CTO</p>
-      <p class="mt-1 text-xs/5 text-gray-500">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
-    </div>
-  </li>
-  <li class="flex justify-between gap-x-6 py-5">
-    <div class="flex min-w-0 gap-x-4">
-      <img class="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm/6 font-semibold text-gray-900">Dries Vincent</p>
-        <p class="mt-1 truncate text-xs/5 text-gray-500">dries.vincent@example.com</p>
-      </div>
-    </div>
-    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-      <p class="text-sm/6 text-gray-900">Business Relations</p>
-      <div class="mt-1 flex items-center gap-x-1.5">
-        <div class="flex-none rounded-full bg-emerald-500/20 p-1">
-          <div class="size-1.5 rounded-full bg-emerald-500"></div>
-        </div>
-        <p class="text-xs/5 text-gray-500">Online</p>
-      </div>
-    </div>
-  </li>
-  <li class="flex justify-between gap-x-6 py-5">
-    <div class="flex min-w-0 gap-x-4">
-      <img class="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm/6 font-semibold text-gray-900">Lindsay Walton</p>
-        <p class="mt-1 truncate text-xs/5 text-gray-500">lindsay.walton@example.com</p>
-      </div>
-    </div>
-    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-      <p class="text-sm/6 text-gray-900">Front-end Developer</p>
-      <p class="mt-1 text-xs/5 text-gray-500">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
-    </div>
-  </li>
-  <li class="flex justify-between gap-x-6 py-5">
-    <div class="flex min-w-0 gap-x-4">
-      <img class="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm/6 font-semibold text-gray-900">Courtney Henry</p>
-        <p class="mt-1 truncate text-xs/5 text-gray-500">courtney.henry@example.com</p>
-      </div>
-    </div>
-    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-      <p class="text-sm/6 text-gray-900">Designer</p>
-      <p class="mt-1 text-xs/5 text-gray-500">Last seen <time datetime="2023-01-23T13:23Z">3h ago</time></p>
-    </div>
-  </li>
-  <li class="flex justify-between gap-x-6 py-5">
-    <div class="flex min-w-0 gap-x-4">
-      <img class="size-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-      <div class="min-w-0 flex-auto">
-        <p class="text-sm/6 font-semibold text-gray-900">Tom Cook</p>
-        <p class="mt-1 truncate text-xs/5 text-gray-500">tom.cook@example.com</p>
-      </div>
-    </div>
-    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-      <p class="text-sm/6 text-gray-900">Director of Product</p>
-      <div class="mt-1 flex items-center gap-x-1.5">
-        <div class="flex-none rounded-full bg-emerald-500/20 p-1">
-          <div class="size-1.5 rounded-full bg-emerald-500"></div>
-        </div>
-        <p class="text-xs/5 text-gray-500">Online</p>
-      </div>
-    </div>
-  </li>
-</ul>
+
+  
+  <div class="container">
+    <h1>최신 콘텐츠</h1>
+    <div id="content-list" class="list-group">불러오는 중...</div>
+  </div>
+
+  <script>
+    moment.locale('ko');
+
+    const SUPABASE_URL = 'https://xjrkvaolxrzexiybclbc.supabase.co';
+    const SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqcmt2YW9seHJ6ZXhpeWJjbGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5OTcxNjksImV4cCI6MjA2NTU3MzE2OX0.cl19LcqXWfufKaxnb79q6NGBVLrLdzGk4tXzNeEZ89c';
+    const TABLE_NAME = 'articles';
+
+    const classes = [
+      'text-bg-secondary',
+      'text-bg-success',
+      'text-bg-danger',
+      'text-bg-warning',
+      'text-bg-info',
+    ];
+
+    function getHashedClass(text) {
+      const prefix = text.slice(0, 2);
+      let hash = 0;
+
+      // 간단한 문자열 해싱 (문자 코드 기반)
+      for (let i = 0; i < prefix.length; i++) {
+        hash = (hash << 5) - hash + prefix.charCodeAt(i);
+        hash |= 0; // 32비트 정수로 변환
+      }
+
+      const index = Math.abs(hash) % classes.length;
+      return classes[index];
+    }
+
+    async function fetchContents() {
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 10);
+
+      const url = `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?created_at=gte.${threeDaysAgo.toISOString()}&order=created_at.desc`;
+
+      const res = await fetch(url, {
+        headers: {
+          'apikey': SUPABASE_API_KEY,
+          'Authorization': `Bearer ${SUPABASE_API_KEY}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        document.getElementById('content-list').textContent = '데이터를 불러오지 못했습니다.';
+        return;
+      }
+
+      const data = await res.json();
+      renderContents(data);
+    }
+
+    function renderContents(contents) {
+      const container = document.getElementById('content-list');
+      container.innerHTML = '';
+
+      if (contents.length === 0) {
+        container.textContent = '최근 3일 내 콘텐츠가 없습니다.';
+        return;
+      }
+
+      contents.forEach(item => {
+        const itemA = document.createElement('a');
+        itemA.className = 'list-group-item list-group-item-action';
+        itemA.href = item.link;
+        itemA.target = '_blank';
+
+        // <div class="d-flex w-100 justify-content-between">
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'd-flex w-100 justify-content-between';
+
+        const title = document.createElement('h5');
+        title.textContent = item.title
+        title.className = 'mb-1';
+
+        const date = document.createElement('small');
+        date.textContent = moment(item.created_at).startOf('hour').fromNow();
+
+
+        const subTitle = document.createElement('p');
+        subTitle.className = 'mb-1';
+        subTitle.textContent = item.title
+
+        const badge = document.createElement('span')
+        badge.className = `badge rounded-pill ${getHashedClass(item.media)}`;
+        badge.textContent = item.media;
+
+        const detail = document.createElement('small');
+        detail.appendChild(badge);
+        detail.appendChild(document.createTextNode(item.summary))
+        
+
+        titleDiv.appendChild(title);
+        titleDiv.appendChild(date);
+
+        itemA.appendChild(titleDiv);
+        itemA.appendChild(subTitle);
+        itemA.appendChild(detail);
+
+
+        container.appendChild(itemA);
+      });
+    }
+
+    fetchContents();
+  </script>
 
 </body>
 </html>
-
