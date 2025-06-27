@@ -1,61 +1,51 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-bs-theme="auto">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GYLee News</title>
+  <title>기술 콘텐츠 리스트</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/locale/ko.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
 <body>
 
 
-  <div class="container">
-    <div id="content-list" class="list-group">불러오는 중...</div>
+  <div id="app" class="container">
+    <div id="content-list" class="list-group">
+      <in-dom-link-item v-for="(item, index) in items" :key="index" :link="item.link"
+        :title="item.translated_title || item.title" :summary="item.translated_summary || item.summary"
+        :media="item.media"
+        :media-class="item.mediaClass"
+        :created-from-now="item.createdFromNow"
+        :id="item.id"
+        :opinion="item.opinion"
+        :summary-request-api="item.summaryRequestApi"
+        :summary-api="item.summaryApi"
+        :opinion-api="item.opinionApi"
+        :pinned="item.pinned"
+        >
+      </in-dom-link-item>
+    </div>
   </div>
 
   <script>
-
-    moment.locale('ko');
 
     const SUPABASE_URL = 'https://xjrkvaolxrzexiybclbc.supabase.co';
     const SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqcmt2YW9seHJ6ZXhpeWJjbGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5OTcxNjksImV4cCI6MjA2NTU3MzE2OX0.cl19LcqXWfufKaxnb79q6NGBVLrLdzGk4tXzNeEZ89c';
     const TABLE_NAME = 'articles';
 
     const params = new URLSearchParams(window.location.search);
+    const summaryRequestApi = params.get('summaryRequestApi');
     const summaryApi = params.get('summaryApi');
-
-    function sendSummary(id) {
-      if (!summaryApi) {
-        console.error('summaryApi 파라미터가 없습니다.');
-        return;
-      }
-
-      const body = { id: id };
-
-      fetch(summaryApi, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          console.log('응답:', data);
-        })
-        .catch(error => console.error('요청 실패:', error));
-    }
+    const opinionApi = params.get('opinionApi');
 
     const classes = [
       'text-bg-secondary',
@@ -79,107 +69,219 @@
       return classes[index];
     }
 
-    async function fetchContents() {
-      const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(threeDaysAgo.getDate() - 10);
+    const { createApp, ref } = Vue
 
-      const url = `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?created_at=gte.${threeDaysAgo.toISOString()}&order=created_at.desc`;
+    createApp({
+      data() {
+        return {
+          items: [
 
-      const res = await fetch(url, {
-        headers: {
-          'apikey': SUPABASE_API_KEY,
-          'Authorization': `Bearer ${SUPABASE_API_KEY}`,
-          'Accept': 'application/json'
-        }
-      });
-
-      if (!res.ok) {
-        document.getElementById('content-list').textContent = '데이터를 불러오지 못했습니다.';
-        return;
-      }
-
-      const data = await res.json();
-      renderContents(data);
-    }
-
-    function renderContents(contents) {
-      const container = document.getElementById('content-list');
-      container.innerHTML = '';
-
-      if (contents.length === 0) {
-        container.textContent = '최근 3일 내 콘텐츠가 없습니다.';
-        return;
-      }
-
-      contents.forEach(item => {
-        const itemA = document.createElement('a');
-        itemA.className = 'list-group-item list-group-item-action';
-        itemA.href = item.link;
-        itemA.target = '_blank';
-
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'd-flex w-100 justify-content-between';
-
-        const title = document.createElement('small');
-        title.className = 'fw-bold';
-        title.textContent = item.translated_title || item.title;
-
-
-        const date = document.createElement('span');
-        date.className = 'badge rounded-pill text-bg-dark me-1';
-        date.textContent = moment(item.created_at).startOf('hour').fromNow();
-
-        const badge = document.createElement('span')
-        badge.className = `badge rounded-pill me-1 ${getHashedClass(item.media)}`;
-        badge.textContent = item.media;
-
-        const subTitle = document.createElement('small');
-        subTitle.className = 'mb-1 text-bold';
-        subTitle.appendChild(badge);
-        subTitle.appendChild(date);
-
-        // subTitle.textContent = item.title
-
-
-
-        const detail = document.createElement('small');
-        detail.className = 'd-block';
-
-        detail.appendChild(document.createTextNode(item.translated_summary || item.summary))
-
-
-        titleDiv.appendChild(title);
-        //titleDiv.appendChild(date);
-
-        itemA.appendChild(titleDiv);
-        itemA.appendChild(subTitle);
-        itemA.appendChild(detail);
-
-        //<button type="button" class="btn btn-primary">Primary</button>
-        const summaryButton = document.createElement('button');
-        summaryButton.className = 'btn btn-primary w-100';
-        summaryButton.textContent = '요약 요청';
-        summaryButton.type = 'button';
-        summaryButton.onclick = (e) => {
-          sendSummary(item.id)
-          summaryButton.textContent = '요약 요청 완료';
-          summaryButton.disabled = true;
-          e.preventDefault();
+          ]
         };
+      },
+      async mounted() {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 10);
 
-        if (summaryApi) {
-          itemA.appendChild(summaryButton);
+        const url = `${SUPABASE_URL}/rest/v1/${TABLE_NAME}?created_at=gte.${threeDaysAgo.toISOString()}&order=created_at.desc`;
+
+        const res = await fetch(url, {
+          headers: {
+            'apikey': SUPABASE_API_KEY,
+            'Authorization': `Bearer ${SUPABASE_API_KEY}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!res.ok) {
+          document.getElementById('content-list').textContent = '데이터를 불러오지 못했습니다.';
+          return;
         }
 
+        const data = await res.json();
+        
+        // 48시간 이내의 콘텐츠 중 opinion이 있는 항목을 상단으로 정렬
+        const now = new Date();
+        const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
+        
+        data.sort((a, b) => {
+          const aCreatedAt = new Date(a.created_at);
+          const bCreatedAt = new Date(b.created_at);
+          
+          // 48시간 이내의 콘텐츠인지 확인
+          const aIsRecent = aCreatedAt > fortyEightHoursAgo;
+          const bIsRecent = bCreatedAt > fortyEightHoursAgo;
+          
+          // opinion 필드가 있는지 확인
+          const aHasOpinion = a.opinion && a.opinion.trim() !== '';
+          const bHasOpinion = b.opinion && b.opinion.trim() !== '';
+          
+          // 48시간 이내 + opinion이 있는 항목을 우선 정렬
+          if (aIsRecent && aHasOpinion && !(bIsRecent && bHasOpinion)) {
+            return -1;
+          }
+          if (bIsRecent && bHasOpinion && !(aIsRecent && aHasOpinion)) {
+            return 1;
+          }
+          
+          // 그 외에는 기본 정렬 (created_at desc)
+          return bCreatedAt - aCreatedAt;
+        });
+
+        data.forEach(item => {
+          item.createdFromNow = moment(item.created_at).fromNow();
+          item.mediaClass = getHashedClass(item.media);
+          item.summaryRequestApi = summaryRequestApi;
+          item.summaryApi = summaryApi;
+          item.opinionApi = opinionApi;
+          
+          // 48시간 이내의 콘텐츠이고 opinion이 있으면 pinned = true로 설정
+          const itemCreatedAt = new Date(item.created_at);
+          if (itemCreatedAt > fortyEightHoursAgo && item.opinion && item.opinion.trim() !== '') {
+            item.pinned = true;
+          }
+        });
 
 
-        container.appendChild(itemA);
-      });
-    }
+        
 
-    fetchContents();
+
+        this.items.push(...data);
+      },
+      components: {
+        InDomLinkItem: {
+          props: ["link", "title", "summary", "createdFromNow", "media", "mediaClass", "id", "opinion", "pinned", "summaryRequestApi", "summaryApi", "opinionApi"],
+          data() {
+            return {
+              opinionText: this.opinion || '',
+              summaryText: this.summary || ''
+            };
+          },
+          methods: {
+            handleSummaryRequestApi() {
+              if (!this.summaryRequestApi || !this.id) return;
+              const url = `${this.summaryRequestApi}?id=${encodeURIComponent(this.id)}`;
+              fetch(url, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                  
+                })
+                .catch(() => {
+                  
+                });
+            },
+            handleOpinionSave() {
+              if (!this.opinionApi || !this.id) return;
+              const url = `${this.opinionApi}`;
+              fetch(url, { 
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: this.id, opinion: this.opinionText })
+              })
+                .then(res => res.json())
+                .then(data => {
+                  
+                })
+                .catch(() => {
+                  
+                });
+            },
+            handleSummarySave() {
+              if (!this.summaryApi || !this.id) return;
+              const url = `${this.summaryApi}`;
+              fetch(url, { 
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: this.id, summary: this.summaryText })
+              })
+                .then(res => res.json())
+                .then(data => {
+                  
+                })
+                .catch(() => {
+                  
+                });
+            }
+          },
+          template: `
+            <a class="list-group-item list-group-item-action" :href="link" target="_blank">
+              <div class="d-flex w-100 justify-content-between">
+                <small class="fw-bold"> {{ pinned ? '📌' : '' }} {{ title }}</small>
+              </div>
+              <small class="mb-1 text-bold">
+                <span
+                  class="badge rounded-pill me-1"
+                  :class="mediaClass"
+                >
+                  {{ media }}
+                </span>
+                <span
+                  class="badge rounded-pill me-1 text-bg-dark"
+                >
+                  {{ createdFromNow }}
+                </span>
+              </small>
+              <small class="d-block" v-if="opinion">
+                <span
+                  class="badge rounded-pill text-danger"
+                >메모</span>{{ opinion }}</small>
+              <small class="d-block" v-if="summary">
+                <span
+                  class="badge rounded-pill text-info"
+                >요약</span>
+                {{ summary }}</small>
+              <div v-if="summaryRequestApi" class="mt-2">
+                <button class="btn btn-sm btn-outline-primary" type="button" @click.stop.prevent="handleSummaryRequestApi">
+                  요약 요청
+                </button>
+              </div>
+              <div v-if="summaryApi" class="mt-2">
+                <div class="input-group input-group-sm">
+                  <textarea 
+                    rows="3"
+                    class="form-control" 
+                    placeholder="요약을 입력하세요" 
+                    v-model="summaryText"
+                    @click.stop.prevent
+                  />
+                  <button 
+                    class="btn btn-outline-info" 
+                    type="button" 
+                    @click.stop.prevent="handleSummarySave"
+                  >
+                    요약 저장
+                  </button>
+                </div>
+              </div>
+              <div v-if="opinionApi" class="mt-2">
+                <div class="input-group input-group-sm">
+                  <textarea 
+                    rows="5"
+                    class="form-control" 
+                    placeholder="의견을 입력하세요" 
+                    v-model="opinionText"
+                    @click.stop.prevent
+                  />
+                  <button 
+                    class="btn btn-outline-danger" 
+                    type="button" 
+                    @click.stop.prevent="handleOpinionSave"
+                  >
+                    메모 저장
+                  </button>
+                </div>
+              </div>
+            </a>
+          `,
+        },
+      },
+    }).mount("#app");
+    moment.locale('ko');
   </script>
-
 </body>
 
 </html>
