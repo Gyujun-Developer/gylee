@@ -202,10 +202,18 @@
           data() {
             return {
               opinionText: this.opinion || '',
-              summaryText: this.summary || ''
+              summaryText: this.summary || '',
+              isSummaryVisible: false,
+              isOpinionVisible: false,
             };
           },
           methods: {
+            toggleSummaryInput() {
+              this.isSummaryVisible = !this.isSummaryVisible;
+            },
+            toggleOpinionInput() {
+              this.isOpinionVisible = !this.isOpinionVisible;
+            },
             handleSummaryRequestApi() {
               if (!this.summaryRequestApi || !this.id) return;
               const url = `${this.summaryRequestApi}?id=${encodeURIComponent(this.id)}`;
@@ -288,7 +296,10 @@
                 </button>
               </div>
               <div v-if="summaryApi" class="mt-2">
-                <div class="input-group input-group-sm">
+                <button class="btn btn-sm btn-outline-info" type="button" @click.stop.prevent="toggleSummaryInput">
+                  요약 {{ isSummaryVisible ? '닫기' : '편집' }}
+                </button>
+                <div v-if="isSummaryVisible" class="input-group input-group-sm mt-1">
                   <textarea 
                     rows="3"
                     class="form-control" 
@@ -306,7 +317,10 @@
                 </div>
               </div>
               <div v-if="opinionApi" class="mt-2">
-                <div class="input-group input-group-sm">
+                <button class="btn btn-sm btn-outline-danger" type="button" @click.stop.prevent="toggleOpinionInput">
+                  메모 {{ isOpinionVisible ? '닫기' : '편집' }}
+                </button>
+                <div v-if="isOpinionVisible" class="input-group input-group-sm mt-1">
                   <textarea 
                     rows="5"
                     class="form-control" 
