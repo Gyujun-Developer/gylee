@@ -73,9 +73,27 @@
     const TABLE_NAME = 'articles';
 
     const params = new URLSearchParams(window.location.search);
-    const summaryRequestApi = params.get('summaryRequestApi');
-    const summaryApi = params.get('summaryApi');
-    const opinionApi = params.get('opinionApi');
+    const apiKeys = ['opinionApi', 'summaryApi', 'summaryRequestApi'];
+    const apiConfig = {};
+
+    // If API keys are present in the URL, store them in localStorage and clean the URL
+    if (params.has(apiKeys[0])) {
+      apiKeys.forEach(key => {
+        const value = params.get(key);
+        if (value) {
+          localStorage.setItem(key, value);
+        }
+      });
+      // Clean the URL to hide the API keys
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Load API configuration from localStorage
+    apiKeys.forEach(key => {
+      apiConfig[key] = localStorage.getItem(key);
+    });
+
+    const { opinionApi, summaryApi, summaryRequestApi } = apiConfig;
 
     const classes = [
       'text-bg-secondary',
