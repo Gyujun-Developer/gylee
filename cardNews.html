@@ -8,6 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/locale/ko.js"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
   <style>
     :root {
       --accent-color: #ff7a00;
@@ -95,6 +96,14 @@
       background: #eee;
       margin: 20px 0;
     }
+    .btn-outline-secondary {
+      --bs-btn-color: #888;
+      --bs-btn-border-color: #ddd;
+      --bs-btn-hover-bg: #f0f0f0;
+      --bs-btn-hover-border-color: #ccc;
+      --bs-btn-active-bg: #e0e0e0;
+      --bs-btn-active-border-color: #bbb;
+    }
   </style>
 </head>
 <body>
@@ -103,14 +112,15 @@
       <div class="feed-header">
         <h2>Card News</h2>
       </div>
-      <div v-for="item in items" :key="item.id" class="card">
+      <div v-for="(item, index) in items" :key="item.id" class="card" :ref="'card' + index">
         <div class="card-body">
           <h5 class="card-title">{{ item.json.title }}</h5>
           <h6 class="card-subtitle">{{ item.json.oneLineSummary }}</h6>
           <ul class="list-group list-group-flush">
             <li v-for="sentence in item.json.body" class="list-group-item">{{ sentence }}</li>
           </ul>
-          <div class="d-flex justify-content-end align-items-center mt-3">
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <button @click="downloadCard(index)" class="btn btn-sm btn-outline-secondary">⬇︎</button>
             <small class="time" :title="item.created_at">{{ formatTime(item.created_at) }}</small>
           </div>
         </div>
@@ -153,6 +163,19 @@
       methods: {
         formatTime(timestamp) {
           return moment(timestamp).fromNow();
+        },
+        downloadCard(index) {
+          const cardElement = this.$refs['card' + index];
+          domtoimage.toPng(cardElement)
+            .then(function (dataUrl) {
+              const link = document.createElement('a');
+              link.download = 'card.png';
+              link.href = dataUrl;
+              link.click();
+            })
+            .catch(function (error) {
+              console.error('oops, something went wrong!', error);
+            });
         }
       }
     }).mount("#app");
