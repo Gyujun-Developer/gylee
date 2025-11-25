@@ -166,7 +166,16 @@
         },
         downloadCard(index) {
           const cardElement = this.$refs['card' + index];
-          domtoimage.toPng(cardElement)
+          const node = Array.isArray(cardElement) ? cardElement[0] : cardElement;
+          const scale = 2;
+          domtoimage.toPng(node, {
+            width: node.clientWidth * scale,
+            height: node.clientHeight * scale,
+            style: {
+              transform: 'scale(' + scale + ')',
+              transformOrigin: 'top left'
+            }
+          })
             .then(function (dataUrl) {
               const link = document.createElement('a');
               link.download = 'card.png';
